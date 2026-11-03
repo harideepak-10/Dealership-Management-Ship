@@ -53,7 +53,7 @@ export const seedCustomers = Array.from({ length: 36 }, (_, i) => {
     registered: dayOffset(-Math.floor(rnd() * 160)),
     contactPref: pick(['Phone', 'WhatsApp', 'Email']),
     interested: [model.name],
-    budget: pick(['₹8–12 L', '₹15–20 L', '₹20–25 L', '₹25–30 L', '₹30 L+']),
+    budget: pick(['₹1–1.5 Cr', '₹1.5–2 Cr', '₹2–2.5 Cr', '₹2.5–3 Cr', '₹3 Cr+']),
     timeline: pick(['Immediate', 'Within 1 month', '1–3 months', '3+ months']),
     owner: pick(salesExecs).name,
     status: pick(['Prospect', 'Prospect', 'Active', 'Customer', 'Inactive']),
@@ -89,7 +89,7 @@ const locations = ['Showroom Floor', 'Stockyard A', 'Stockyard B', 'Test Drive F
 export const seedInventory = Array.from({ length: 30 }, (_, i) => {
   const v = allVariants[i % allVariants.length];
   const m = models.find((x) => x.slug === v.slug);
-  const isFleet = [0, 3, 6, 9, 12].includes(i); // one test-drive car per model
+  const isFleet = [0, 4, 7, 9, 12].includes(i); // one test-drive car per model
   return {
     id: `VEH-${pad(5001 + i)}`,
     vin: `MA1SL${String.fromCharCode(65 + (i % 26))}${pad(Math.floor(rnd() * 99999999), 8)}${pad(i, 4)}`,
@@ -137,10 +137,10 @@ export const quotationStatuses = ['Draft', 'Pending Approval', 'Approved', 'Sent
 export const seedQuotations = Array.from({ length: 14 }, (_, i) => {
   const c = seedCustomers[i * 2];
   const v = pick(allVariants);
-  const accessories = pick([0, 15000, 32000, 48000]);
-  const discount = pick([0, 10000, 25000, 50000, 75000]);
+  const accessories = pick([0, 150000, 320000, 480000]);
+  const discount = pick([0, 100000, 250000, 400000, 600000]);
   const tax = Math.round(v.price * 0.28);
-  const charges = 42000; // registration + handling
+  const charges = 1800000; // registration, insurance + handling
   return {
     id: `QT-${pad(4101 + i)}`,
     customerId: c.id,
@@ -155,7 +155,7 @@ export const seedQuotations = Array.from({ length: 14 }, (_, i) => {
     total: v.price + tax + charges + accessories - discount,
     validTill: dayOffset(Math.floor(rnd() * 20) - 3),
     preparedBy: pick(salesExecs).name,
-    status: discount > 40000 && i % 3 === 0 ? 'Pending Approval' : pick(quotationStatuses),
+    status: discount > 300000 && i % 3 === 0 ? 'Pending Approval' : pick(quotationStatuses),
     version: pick([1, 1, 2, 3]),
   };
 });
@@ -166,7 +166,7 @@ const allocatable = seedInventory.filter((v) => v.status === 'Allocated' || v.st
 export const seedBookings = Array.from({ length: 10 }, (_, i) => {
   const c = seedCustomers[i * 3 + 1];
   const veh = allocatable[i % Math.max(allocatable.length, 1)];
-  const total = veh ? Math.round(veh.price * 1.3) : 2500000;
+  const total = veh ? Math.round(veh.price * 1.3) : 25000000;
   const paid = Math.round(total * pick([0.05, 0.2, 0.5, 0.8, 1]));
   return {
     id: `BK-${pad(6101 + i)}`,
@@ -176,7 +176,7 @@ export const seedBookings = Array.from({ length: 10 }, (_, i) => {
     variant: veh?.variant,
     vehicleId: veh?.id,
     vin: veh?.vin,
-    bookingAmount: 51000,
+    bookingAmount: 1000000,
     total,
     paid,
     expectedDelivery: dayOffset(Math.floor(rnd() * 30) + 2),
@@ -200,27 +200,27 @@ export const seedServices = Array.from({ length: 14 }, (_, i) => {
     type: pick(['Periodic service', 'Periodic service', 'Repair', 'Warranty', 'Accident repair', 'Inspection']),
     date: dayOffset(Math.floor(rnd() * 12) - 5),
     advisor: 'Rahul Krishnan',
-    complaint: pick(['Brake noise', 'AC not cooling', '10,000 km service', 'Infotainment lag', 'Wheel alignment', '20,000 km service']),
-    estimate: pick([4500, 8200, 12500, 18900, 26000]),
+    complaint: pick(['Brake noise', 'AC not cooling', 'Annual service', 'PCM software update', 'Wheel alignment', 'Brake pad replacement']),
+    estimate: pick([45000, 82000, 125000, 189000, 260000]),
     status: pick(serviceStatuses.slice(0, 10)),
   };
 });
 
 // Historical monthly sales for charts (units)
 export const monthlySales = [
-  { month: 'Jun', units: 38, revenue: 8.9 },
-  { month: 'Jul', units: 42, revenue: 9.8 },
-  { month: 'Aug', units: 47, revenue: 11.2 },
-  { month: 'Sep', units: 51, revenue: 12.4 },
-  { month: 'Oct', units: 63, revenue: 15.6 },
-  { month: 'Nov', units: 21, revenue: 5.3 },
+  { month: 'Jun', units: 9, revenue: 17.2 },
+  { month: 'Jul', units: 11, revenue: 21.5 },
+  { month: 'Aug', units: 10, revenue: 19.8 },
+  { month: 'Sep', units: 13, revenue: 26.4 },
+  { month: 'Oct', units: 17, revenue: 34.9 },
+  { month: 'Nov', units: 5, revenue: 9.6 },
 ];
 
 export const recentActivity = [
   { who: 'Priya Raman', what: 'sent quotation QT-4106 to Kavya Menon', when: '12 min ago' },
   { who: 'Divya Nair', what: 'approved discount on QT-4104', when: '40 min ago' },
-  { who: 'Arjun Mehta', what: 'completed test drive TD-3105 (Terra XLX)', when: '1 hr ago' },
-  { who: 'Meena Kumari', what: 'recorded ₹2,50,000 payment on BK-6103', when: '2 hr ago' },
+  { who: 'Arjun Mehta', what: 'completed test drive TD-3105 (Cayenne GTS)', when: '1 hr ago' },
+  { who: 'Meena Kumari', what: 'recorded ₹25,00,000 payment on BK-6103', when: '2 hr ago' },
   { who: 'Rahul Krishnan', what: 'created job card JC-8102', when: '3 hr ago' },
   { who: 'Sanjay Pillai', what: 'added 4 vehicles to Stockyard A', when: 'Yesterday' },
 ];

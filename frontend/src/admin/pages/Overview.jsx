@@ -7,7 +7,7 @@ import { models } from '../../data/models';
 import { useDemo } from '../../store/DemoStore';
 import { Kpi, PageHead, fmtDate, todayISO } from '../kit';
 
-const palette = ['#1f2a37', '#b48c4f', '#4d7cbf', '#2f8f83', '#9b6bc9', '#d07a4a', '#8a94a3'];
+const palette = ['#1f2a37', '#c8102e', '#4d7cbf', '#2f8f83', '#9b6bc9', '#d07a4a', '#8a94a3'];
 
 export default function Overview() {
   const { db, user } = useDemo();
@@ -125,7 +125,7 @@ export default function Overview() {
                 <b>{f.v}</b>
               </div>
               <div style={{ height: 8, background: '#eef0f3', borderRadius: 4 }}>
-                <div style={{ height: 8, width: `${(f.v / funnel[0].v) * 100}%`, background: '#b48c4f', borderRadius: 4 }} />
+                <div style={{ height: 8, width: `${(f.v / funnel[0].v) * 100}%`, background: '#c8102e', borderRadius: 4 }} />
               </div>
             </div>
           ))}
@@ -176,7 +176,7 @@ export default function Overview() {
         <div className="card">
           <div className="card-head">
             <h3>Today's test drives</h3>
-            <Link to="/admin/test-drives" style={{ fontSize: 12, color: '#b48c4f' }}>
+            <Link to="/admin/test-drives" style={{ fontSize: 12, color: '#c8102e' }}>
               Calendar →
             </Link>
           </div>

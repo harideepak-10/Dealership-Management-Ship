@@ -1,21 +1,22 @@
 // Brand & dealership configuration.
 // The PRD keeps the brand configurable: change the values here to re-skin the demo.
+// Concept demo: the dealership below is fictional and not affiliated with Porsche AG.
 export const brand = {
-  name: 'Solenne',
-  tagline: 'Engineered for the long road.',
-  dealership: 'Solenne Coastal Motors',
+  name: 'Porsche',
+  tagline: 'Performance, every single day.',
+  dealership: 'Coastal Motors Chennai',
   city: 'Chennai',
   address: '42, Anna Salai, Teynampet, Chennai, Tamil Nadu 600018',
   phone: '+91 44 4000 1234',
   whatsapp: '914440001234',
-  email: 'hello@solennecoastal.in',
+  email: 'hello@coastalmotors.in',
   hours: [
     { day: 'Mon – Sat', time: '9:30 AM – 8:00 PM' },
     { day: 'Sunday', time: '10:00 AM – 6:00 PM' },
   ],
-  // Accent colour used across the public website
-  accent: '#c9a46a',
+  accent: '#c8102e',
   currency: 'INR',
+  disclaimer: 'Concept demo · not affiliated with or endorsed by Porsche AG',
 };
 
 export const formatINR = (n) =>

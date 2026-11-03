@@ -51,7 +51,7 @@ export default function Login() {
             Sign in
           </button>
           <p style={{ marginTop: 18, fontSize: 13, textAlign: 'center' }}>
-            <Link to="/" style={{ color: '#b48c4f' }}>
+            <Link to="/" style={{ color: '#c8102e' }}>
               ← Back to public website
             </Link>
           </p>

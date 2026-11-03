@@ -4,7 +4,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import * as seed from '../data/seed';
 
-const KEY = 'solenne-demo-v1';
+const KEY = 'porsche-demo-v1';
 const Ctx = createContext(null);
 
 const initial = () => ({

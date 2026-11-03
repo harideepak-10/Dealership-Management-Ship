@@ -3,11 +3,6 @@ import { brand } from '../config/brand';
 export function Logo({ light = true }) {
   return (
     <span className={`logo ${light ? 'logo-light' : 'logo-dark'}`}>
-      <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
-        <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" strokeWidth="2" />
-        <path d="M8 19 C12 11, 20 11, 24 19" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" />
-        <circle cx="16" cy="13" r="2" fill="var(--accent)" />
-      </svg>
       <span className="logo-word">{brand.name.toUpperCase()}</span>
     </span>
   );

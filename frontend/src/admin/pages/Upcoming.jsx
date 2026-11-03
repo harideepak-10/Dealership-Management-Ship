@@ -19,7 +19,7 @@ export default function Upcoming() {
     <div className="page">
       <PageHead title={title} sub={desc} />
       <div className="card" style={{ textAlign: 'center', padding: 56 }}>
-        <Hammer size={28} style={{ margin: '0 auto 12px', color: '#b48c4f' }} />
+        <Hammer size={28} style={{ margin: '0 auto 12px', color: '#c8102e' }} />
         <h3>Not part of this demo</h3>
         <p style={{ color: '#6a7280', marginTop: 6 }}>Planned for {phase} of the roadmap.</p>
       </div>

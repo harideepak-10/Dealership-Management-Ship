@@ -85,7 +85,7 @@ export default function AdminLayout() {
           </div>
         ))}
         <div className="side-foot">
-          Static demo with sample data. <br />
+          Concept demo with sample data. <br />
           <Link to="/">← Back to public website</Link>
         </div>
       </aside>

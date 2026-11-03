@@ -50,10 +50,9 @@ export default function Catalogue() {
           </select>
           <select className="field-dark" value={budget} onChange={(e) => setBudget(e.target.value)}>
             <option value="All">Any budget</option>
-            <option value="1000000">Under ₹10 L</option>
-            <option value="2000000">Under ₹20 L</option>
-            <option value="2500000">Under ₹25 L</option>
-            <option value="3000000">Under ₹30 L</option>
+            <option value="15000000">Under ₹1.5 Cr</option>
+            <option value="20000000">Under ₹2 Cr</option>
+            <option value="30000000">Under ₹3 Cr</option>
           </select>
         </div>
         <div className="grid-models">

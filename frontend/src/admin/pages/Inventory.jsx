@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Badge } from '../../components/ui';
-import CarArt from '../../components/CarArt';
+import VehicleImage from '../../components/VehicleImage';
 import { formatINR } from '../../config/brand';
 import { models } from '../../data/models';
 import { useDemo } from '../../store/DemoStore';
@@ -52,8 +52,8 @@ export default function Inventory() {
         />
         {v && (
           <Drawer title={`${v.model} ${v.variant}`} sub={`${v.id} · VIN ${v.vin}`} onClose={() => setSel(null)}>
-            <div style={{ background: '#0f1216', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-              <CarArt shape={models.find((m) => m.name === v.model).shape} color={models.find((m) => m.name === v.model).colours.find((c) => c.name === v.colour)?.hex} />
+            <div style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 16, background: '#0f1216' }}>
+              <VehicleImage model={models.find((m) => m.name === v.model)} colour={models.find((m) => m.name === v.model).colours.find((c) => c.name === v.colour)?.hex} />
             </div>
             <dl className="dl">
               <dt>Colour</dt>

@@ -16,7 +16,7 @@ export default function SiteLayout() {
   return (
     <div className="site">
       <div className="demo-ribbon">
-        Static demo · sample data only · <Link to="/admin/login">Open the employee dashboard →</Link>
+        {brand.disclaimer} · sample data · <Link to="/admin/login">Open the employee dashboard →</Link>
       </div>
       <header className="site-header">
         <div className="wrap">
@@ -54,7 +54,7 @@ export default function SiteLayout() {
             <div>
               <Logo />
               <p style={{ marginTop: 16, color: 'var(--muted)', maxWidth: 300 }}>
-                {brand.dealership} — the authorised {brand.name} dealership in {brand.city}. Sales, test drives and after-sales service under one roof.
+                {brand.dealership} — {brand.name} sales, test drives and after-sales service in {brand.city}, under one roof.
               </p>
             </div>
             <div>
@@ -80,7 +80,7 @@ export default function SiteLayout() {
             </div>
           </div>
           <div className="foot-bottom">
-            <span>© 2026 {brand.dealership}. Fictional brand for demonstration.</span>
+            <span>© 2026 {brand.dealership}. {brand.disclaimer}. Vehicle photos via Unsplash.</span>
             <span>
               <Link to="/privacy">Privacy Policy</Link> · <Link to="/terms">Terms & Conditions</Link>
             </span>

@@ -100,7 +100,7 @@ function PayBar({ paid, total }) {
         {formatINR(paid)} <span className="muted">· {pct}%</span>
       </div>
       <div style={{ height: 5, background: '#eef0f3', borderRadius: 3, marginTop: 3 }}>
-        <div style={{ height: 5, width: `${pct}%`, background: pct === 100 ? '#1d7a3a' : '#b48c4f', borderRadius: 3 }} />
+        <div style={{ height: 5, width: `${pct}%`, background: pct === 100 ? '#1d7a3a' : '#c8102e', borderRadius: 3 }} />
       </div>
     </div>
   );

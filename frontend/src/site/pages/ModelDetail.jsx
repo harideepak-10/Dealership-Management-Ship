@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Check, CircleDot } from 'lucide-react';
-import CarArt from '../../components/CarArt';
+import VehicleImage from '../../components/VehicleImage';
 import { brand, formatINR } from '../../config/brand';
-import { getModel } from '../../data/models';
+import { getModel, interiorImage } from '../../data/models';
 import { useDemo } from '../../store/DemoStore';
 
 export default function ModelDetail() {
@@ -12,9 +12,10 @@ export default function ModelDetail() {
   const { db } = useDemo();
   const [variant, setVariant] = useState(model?.variants[0]);
   const [colour, setColour] = useState(model?.colours[0]);
-  const [view, setView] = useState('Exterior');
+  const [view, setView] = useState(0);
   if (!model) return <Navigate to="/models" replace />;
 
+  const shots = [...model.gallery, ...(model.gallery.length ? [interiorImage] : [])];
   const stock = db.inventory.filter((v) => v.model === model.name && v.status === 'Available' && !v.testDrive).length;
   const qs = `?model=${encodeURIComponent(model.name)}&variant=${encodeURIComponent(variant.name)}`;
 
@@ -27,24 +28,23 @@ export default function ModelDetail() {
           </div>
           <div className="detail-grid">
             <div>
-              {view === 'Exterior' ? (
-                <CarArt shape={model.shape} color={colour.hex} className="hero-car" />
-              ) : (
-                <div className="interior">Interior gallery — brand photography goes here</div>
-              )}
+              <VehicleImage key={slug + view} model={model} colour={colour.hex} src={shots[view]} eager className="detail-photo" />
               <div className="swatches">
                 {model.colours.map((c) => (
                   <button key={c.name} className={`swatch ${c.name === colour.name ? 'on' : ''}`} style={{ background: c.hex }} onClick={() => setColour(c)} title={c.name} aria-label={c.name} />
                 ))}
               </div>
               <p style={{ textAlign: 'center', color: 'var(--muted)', fontSize: 13, marginTop: 8 }}>{colour.name}</p>
-              <div className="view-toggle">
-                {['Exterior', 'Interior'].map((v) => (
-                  <button key={v} className={`chip ${view === v ? 'on' : ''}`} onClick={() => setView(v)}>
-                    {v}
-                  </button>
-                ))}
-              </div>
+              {shots.length > 1 && (
+                <div className="thumbs">
+                  {shots.map((s, i) => (
+                    <button key={s} className={view === i ? 'on' : ''} onClick={() => setView(i)} aria-label={`Photo ${i + 1}`}>
+                      <img src={s.replace('w=1600', 'w=240')} alt="" loading="lazy" />
+                    </button>
+                  ))}
+                </div>
+              )}
+              {model.photoCredit && <p className="credit-inline">Photos: Unsplash contributors</p>}
             </div>
             <div>
               <span className="eyebrow">{model.category}</span>

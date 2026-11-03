@@ -6,7 +6,7 @@ import { quotationStatuses } from '../../data/seed';
 import { useDemo } from '../../store/DemoStore';
 import { DataTable, Drawer, Guard, PageHead, fmtDate } from '../kit';
 
-const DISCOUNT_LIMIT = 40000; // discounts above this need Sales Manager approval
+const DISCOUNT_LIMIT = 300000; // discounts above this need Sales Manager approval
 
 export default function Quotations() {
   const { db, update, user } = useDemo();

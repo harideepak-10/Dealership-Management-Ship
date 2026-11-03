@@ -1,11 +1,11 @@
 import { Link, useSearchParams } from 'react-router-dom';
-import CarArt from '../../components/CarArt';
+import VehicleImage from '../../components/VehicleImage';
 import { brand, formatLakh } from '../../config/brand';
 import { models, startingPrice } from '../../data/models';
 
 export default function Compare() {
   const [params, setParams] = useSearchParams();
-  const selected = (params.get('m') || 'aero,terra,volt').split(',').filter((s) => models.some((m) => m.slug === s));
+  const selected = (params.get('m') || '911,taycan,cayenne').split(',').filter((s) => models.some((m) => m.slug === s));
   const list = selected.map((s) => models.find((m) => m.slug === s));
   const rows = [...new Set(list.flatMap((m) => Object.keys(m.specs)))];
 
@@ -39,7 +39,7 @@ export default function Compare() {
                         </option>
                       ))}
                     </select>
-                    <CarArt shape={m.shape} color={m.colours[0].hex} />
+                    <VehicleImage model={m} className="compare-img" />
                   </td>
                 ))}
               </tr>
@@ -85,7 +85,7 @@ export default function Compare() {
                 <th />
                 {list.map((m) => (
                   <td key={m.slug}>
-                    <Link to={`/test-drive?model=${m.name}`} className="btn btn-primary btn-sm">
+                    <Link to={`/test-drive?model=${encodeURIComponent(m.name)}`} className="btn btn-primary btn-sm">
                       Test drive
                     </Link>
                   </td>
