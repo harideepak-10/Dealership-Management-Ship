@@ -17,8 +17,20 @@ const validators = {
   consent: (v) => (!v ? 'Consent is required so we can contact you' : ''),
 };
 
+const VISITOR_KEY = 'porsche-demo-visitor';
+const remembered = () => {
+  try {
+    return JSON.parse(localStorage.getItem(VISITOR_KEY)) || {};
+  } catch {
+    return {};
+  }
+};
+
 function useForm(initial, required) {
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState(() => {
+    const r = remembered();
+    return { ...initial, name: initial.name || r.name || '', mobile: initial.mobile || r.mobile || '', email: initial.email || r.email || '' };
+  });
   const [errors, setErrors] = useState({});
   const set = (k) => (e) => {
     const v = e?.target ? (e.target.type === 'checkbox' ? e.target.checked : e.target.value) : e;
@@ -134,7 +146,13 @@ function useSubmit(kind) {
       if (form.website) return; // honeypot: bots fill hidden field
       setBusy(true);
       setTimeout(() => {
-        const ref = submit(kind, { ...form, mobile: form.mobile.replace(/\s|\+91/g, '') });
+        const mobile = form.mobile.replace(/\s|\+91/g, '');
+        try {
+          localStorage.setItem(VISITOR_KEY, JSON.stringify({ name: form.name, mobile, email: form.email }));
+        } catch {
+          /* ignore */
+        }
+        const ref = submit(kind, { ...form, mobile });
         nav(`/thank-you?kind=${kind}&ref=${ref}&name=${encodeURIComponent(form.name.split(' ')[0])}`);
       }, 500);
     },
@@ -277,7 +295,7 @@ export function EnquiryForm() {
 export function QuoteForm() {
   const [p] = useSearchParams();
   const { form, set, errors, validate } = useForm(
-    { name: '', mobile: '', email: '', model: p.get('model') || '', variant: p.get('variant') || '', colour: '', exchange: 'No', finance: 'No', message: '', consent: false },
+    { name: '', mobile: '', email: '', model: p.get('model') || '', variant: p.get('variant') || '', colour: p.get('colour') || '', exchange: 'No', finance: p.get('finance') || 'No', message: p.get('config') || '', consent: false },
     ['name', 'mobile', 'model', 'consent'],
   );
   const [busy, send] = useSubmit('quote');
@@ -332,6 +350,81 @@ export function QuoteForm() {
           <small>Your quotation is prepared and approved by our sales team.</small>
           <button className="btn btn-primary" disabled={busy}>
             {busy ? 'Submitting…' : 'Request quotation'}
+          </button>
+        </div>
+      </form>
+    </Layout>
+  );
+}
+
+// ---------- Service booking (existing owners) ----------
+const serviceTypes = ['Annual / periodic service', 'Repair', 'Warranty work', 'EV battery health check', 'Tyres & alignment', 'Accident repair', 'Other'];
+
+export function ServiceForm() {
+  const { form, set, errors, validate } = useForm(
+    { name: '', mobile: '', email: '', model: '', registration: '', mileage: '', serviceType: '', date: '', slot: '', pickup: 'No', message: '', consent: false },
+    ['name', 'mobile', 'model', 'serviceType', 'date', 'consent'],
+  );
+  const [busy, send] = useSubmit('service');
+  return (
+    <Layout
+      eyebrow="Service"
+      title="Book a service"
+      intro="For existing owners. Tell us about your car and when you'd like to come in — our service advisor confirms the appointment."
+      steps={['Choose your car, service type and preferred date', 'A service advisor confirms the slot', 'Drop off your car, or use pick-up & drop', 'Track progress and approve any extra work']}
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (validate()) send(form);
+        }}
+        noValidate
+      >
+        <div className="form-grid">
+          <ContactFields form={form} set={set} errors={errors} />
+          <Field label="Your vehicle *" error={errors.model}>
+            <select value={form.model} onChange={set('model')}>
+              <option value="">Select model</option>
+              {models.map((x) => (
+                <option key={x.slug} value={x.name}>
+                  {brand.name} {x.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Registration number">
+            <input value={form.registration} onChange={set('registration')} placeholder="e.g. TN 09 AB 1234" />
+          </Field>
+          <Field label="Service type *" error={errors.serviceType}>
+            <select value={form.serviceType} onChange={set('serviceType')}>
+              <option value="">Select type</option>
+              {serviceTypes.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Odometer (km)">
+            <input value={form.mileage} onChange={set('mileage')} inputMode="numeric" placeholder="e.g. 18,500" />
+          </Field>
+          <Field label="Preferred date *" error={errors.date}>
+            <input type="date" min={dayOffset(1)} max={dayOffset(45)} value={form.date} onChange={set('date')} />
+          </Field>
+          <Field label="Pick-up & drop">
+            <select value={form.pickup} onChange={set('pickup')}>
+              <option>No</option>
+              <option>Yes, within city limits</option>
+            </select>
+          </Field>
+          <Field label="Describe the issue or request" full>
+            <textarea value={form.message} onChange={set('message')} placeholder="Warning lights, noises, anything we should check…" />
+          </Field>
+          <Consent form={form} set={set} errors={errors} />
+        </div>
+        <Honeypot set={set} />
+        <div className="form-foot">
+          <small>Appointments are confirmed by our service advisor.</small>
+          <button className="btn btn-primary" disabled={busy}>
+            {busy ? 'Submitting…' : 'Request service appointment'}
           </button>
         </div>
       </form>

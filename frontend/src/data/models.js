@@ -9,6 +9,7 @@ export const categories = ['Sports Car', 'Electric', 'SUV', 'Gran Turismo'];
 export const models = [
   {
     slug: '911',
+    family: '911',
     name: '911',
     category: 'Sports Car',
     shape: 'sedan',
@@ -46,6 +47,7 @@ export const models = [
   },
   {
     slug: 'taycan',
+    family: 'Taycan',
     name: 'Taycan',
     category: 'Electric',
     shape: 'ev',
@@ -82,6 +84,7 @@ export const models = [
   },
   {
     slug: 'cayenne',
+    family: 'Cayenne',
     name: 'Cayenne',
     category: 'SUV',
     shape: 'suv',
@@ -117,6 +120,7 @@ export const models = [
   },
   {
     slug: 'macan',
+    family: 'Macan',
     name: 'Macan Electric',
     category: 'Electric',
     shape: 'suv',
@@ -152,7 +156,107 @@ export const models = [
     ],
   },
   {
+    slug: 'cayenne-coupe',
+    name: 'Cayenne Coupé',
+    category: 'SUV',
+    family: 'Cayenne',
+    shape: 'suv',
+    tagline: 'The Cayenne, with a sportier line.',
+    description:
+      'A sloping roofline, adaptive rear spoiler and four sports seats as standard — all the capability of the Cayenne with a more dynamic stance.',
+    isNew: false,
+    featured: false,
+    image: null, // no free-licence Cayenne Coupé photo yet
+    gallery: [],
+    photoCredit: null,
+    colours: [
+      { name: 'Chalk', hex: '#d8d6cf' },
+      { name: 'Jet Black Metallic', hex: '#17191c' },
+      { name: 'Carmine Red', hex: '#9b1b24' },
+      { name: 'Quartzite Grey Metallic', hex: '#8b8f93' },
+    ],
+    specs: {
+      Engine: '3.0L V6 / 4.0L V8 twin-turbo',
+      Power: '353 – 500 PS',
+      Torque: '500 – 660 Nm',
+      'Top speed': 'Up to 275 km/h',
+      Transmission: '8-speed Tiptronic S',
+      Drive: 'All-wheel drive',
+      Seating: '4 (5 optional)',
+      Roof: 'Fixed panoramic glass',
+    },
+    features: ['Adaptive rear spoiler', 'Sports seats with integrated headrests', 'Panoramic glass roof', 'Adaptive air suspension', 'Matrix LED headlights', 'Sport Chrono package'],
+    variants: [
+      { id: 'cayenne-coupe-std', name: 'Cayenne Coupé', price: 14400000, fuel: 'Petrol', transmission: 'Automatic' },
+      { id: 'cayenne-coupe-gts', name: 'Cayenne GTS Coupé', price: 19500000, fuel: 'Petrol', transmission: 'Automatic' },
+    ],
+  },
+  {
+    slug: 'cayenne-electric',
+    name: 'Cayenne Electric',
+    category: 'Electric',
+    family: 'Cayenne',
+    shape: 'suv',
+    tagline: 'The Cayenne, fully electric.',
+    description:
+      'The all-electric Cayenne. A large high-voltage battery, 800-volt charging and dual-motor all-wheel drive, with the practicality of a full-size SUV.',
+    isNew: true,
+    featured: false,
+    image: null, // no free-licence Cayenne Electric photo yet
+    gallery: [],
+    photoCredit: null,
+    colours: [
+      { name: 'Arctic Grey', hex: '#b9bcc0' },
+      { name: 'Jet Black Metallic', hex: '#17191c' },
+      { name: 'Oak Green Metallic', hex: '#3e4a3d' },
+    ],
+    specs: {
+      Battery: 'Approx. 113 kWh',
+      Power: 'Approx. 408 – 1,156 PS (Turbo, boost)',
+      Charging: '800-volt DC fast charging',
+      Drive: 'Dual-motor AWD',
+      Seating: '5',
+      'Ex-showroom': '₹1.77 – 2.28 Cr',
+    },
+    features: ['800-volt architecture', 'Porsche Active Ride (option)', 'Curved OLED display', 'Inductive charging (option)', 'Passenger display', 'Surround view'],
+    variants: [
+      { id: 'cayenne-e-std', name: 'Cayenne Electric', price: 17700000, fuel: 'Electric', transmission: 'Automatic' },
+      { id: 'cayenne-e-turbo', name: 'Cayenne Turbo Electric', price: 22800000, fuel: 'Electric', transmission: 'Automatic' },
+    ],
+  },
+  {
+    slug: 'macan-petrol',
+    name: 'Macan',
+    category: 'SUV',
+    family: 'Macan',
+    shape: 'suv',
+    tagline: 'The compact sports SUV.',
+    description:
+      'The petrol Macan: a turbocharged four-cylinder, PDK and all-wheel drive in Porsche\'s most compact SUV — agile in the city, composed on the highway.',
+    isNew: false,
+    featured: false,
+    image: null, // no free-licence Macan photo yet
+    gallery: [],
+    photoCredit: null,
+    colours: [
+      { name: 'Carrara White Metallic', hex: '#eeeeea' },
+      { name: 'Gentian Blue Metallic', hex: '#1f3f73' },
+      { name: 'Jet Black Metallic', hex: '#17191c' },
+    ],
+    specs: {
+      Engine: '2.0L turbo petrol',
+      Power: 'Approx. 265 PS',
+      Transmission: '7-speed PDK',
+      Drive: 'All-wheel drive',
+      Seating: '5',
+      'Ex-showroom': '₹89.65 L',
+    },
+    features: ['Porsche Traction Management', 'LED headlights', '10.9" touchscreen', 'Park assist', 'Sports steering wheel', 'Apple CarPlay'],
+    variants: [{ id: 'macan-petrol', name: 'Macan', price: 8965000, fuel: 'Petrol', transmission: 'PDK' }],
+  },
+  {
     slug: 'panamera',
+    family: 'Panamera',
     name: 'Panamera',
     category: 'Gran Turismo',
     shape: 'sedan',
@@ -185,6 +289,20 @@ export const models = [
       { id: 'panamera-gts', name: 'Panamera GTS', price: 23300000, fuel: 'Petrol', transmission: 'PDK' },
     ],
   },
+];
+
+export const families = ['911', 'Taycan', 'Macan', 'Cayenne', 'Panamera'];
+
+// Options shown in the "Build yours" configurator (indicative prices)
+export const packages = [
+  { id: 'sport-chrono', name: 'Sport Chrono package', price: 350000 },
+  { id: 'pdls', name: 'Matrix LED headlights (PDLS+)', price: 280000 },
+  { id: 'bose', name: 'Bose Surround Sound', price: 220000 },
+  { id: 'burmester', name: 'Burmester 3D High-End Sound', price: 950000 },
+  { id: 'wheels', name: '21" sport wheels', price: 420000 },
+  { id: 'ceramic', name: 'Ceramic composite brakes (PCCB)', price: 1100000 },
+  { id: 'interior', name: 'Leather interior package', price: 520000 },
+  { id: 'warranty', name: 'Extended warranty (2 years)', price: 310000 },
 ];
 
 export const interiorImage = img('1563156454-0be991636c70');

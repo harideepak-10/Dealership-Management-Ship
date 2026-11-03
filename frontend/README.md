@@ -1,4 +1,4 @@
-# Solenne Coastal Motors — Static Demo
+# Porsche Dealership — Static Demo (Coastal Motors Chennai)
 
 Static React (Vite) demo of the Automotive Dealership Management Platform:
 the public showcase website plus a preview of the employee dashboard.
@@ -19,11 +19,18 @@ npm run build      # production build in dist/ (deploy dist/ to Netlify)
 4. The same submission also created a **customer** and a **lead** (Leads → New).
 5. **Reset demo data** in the top bar restores the original sample data.
 
+## Automation
+Admin → **Automations** lists 27 rules (lead assignment, scoring, reminders, follow-ups,
+expiries, allocation, service due, alerts, daily digest) with on/off switches and an activity
+log. Admin → **Communications** shows every simulated email / SMS / WhatsApp message.
+Scheduled rules run every minute in the demo. See `../docs/AUTOMATION.md` for the backend plan.
+
 ## Structure
 - `src/config/brand.js` – brand / dealership settings (change name, address, accent colour here)
 - `src/data/models.js` – catalogue: models, variants, specs, colours, offers
 - `src/data/seed.js` – sample customers, leads, test drives, inventory, quotes, bookings, service
 - `src/store/DemoStore.jsx` – in-browser store, role permissions, form submissions
+- `src/store/automation.js` – automation rules, message templates, daily digest
 - `src/site/` – public website pages
 - `src/admin/` – dashboard pages
 

@@ -12,6 +12,11 @@ const copy = {
     body: 'Your message has reached our team.',
     note: 'A member of our team will contact you on your preferred channel, usually within 2 business hours.',
   },
+  service: {
+    title: 'Service request received',
+    body: 'Your request has been sent to our service team.',
+    note: 'A service advisor will confirm your appointment and any pick-up details. This is not yet a confirmed booking.',
+  },
   quote: {
     title: 'Quotation request received',
     body: 'Our sales team will prepare an itemised quotation for you.',
@@ -44,7 +49,7 @@ export default function Confirmation() {
         <Link to="/models" className="btn btn-ghost">
           Keep exploring
         </Link>
-        <Link to="/admin/test-drives" className="btn btn-primary">
+        <Link to={{ service: '/admin/service', testdrive: '/admin/test-drives' }[p.get('kind')] || '/admin/leads'} className="btn btn-primary">
           See it in the dashboard (demo)
         </Link>
       </div>

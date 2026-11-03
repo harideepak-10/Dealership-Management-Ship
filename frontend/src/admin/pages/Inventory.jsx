@@ -5,13 +5,16 @@ import VehicleImage from '../../components/VehicleImage';
 import { formatINR } from '../../config/brand';
 import { models } from '../../data/models';
 import { useDemo } from '../../store/DemoStore';
-import { DataTable, Drawer, Guard, Kpi, PageHead, fmtDate } from '../kit';
+import { DataTable, Drawer, FormDrawer, Guard, Kpi, PageHead, Toast, exportCSV, fmtDate, todayISO } from '../kit';
+import { allVariants } from '../../data/models';
 
 const statuses = ['Available', 'Reserved', 'Allocated', 'In Transit', 'Sold', 'Delivered'];
 
 export default function Inventory() {
-  const { db, update } = useDemo();
+  const { db, update, create } = useDemo();
   const [sel, setSel] = useState(null);
+  const [adding, setAdding] = useState(false);
+  const [toast, setToast] = useState('');
   const v = sel && db.inventory.find((x) => x.id === sel);
   const age = (d) => Math.round((Date.now() - new Date(d)) / 86400000);
   const count = (s) => db.inventory.filter((x) => x.status === s).length;
@@ -20,7 +23,8 @@ export default function Inventory() {
     <Guard module="inventory">
       <div className="page">
         <PageHead title="Inventory" sub="Every physical vehicle tracked by VIN, from stockyard to delivery.">
-          <button className="abtn abtn-primary">
+          <button className="abtn" onClick={() => exportCSV('inventory.csv', db.inventory)}>Export</button>
+          <button className="abtn abtn-primary" onClick={() => setAdding(true)}>
             <Plus size={15} /> Add vehicle
           </button>
         </PageHead>
@@ -50,6 +54,31 @@ export default function Inventory() {
             { label: 'Status', render: (r) => <><Badge>{r.status}</Badge>{r.testDrive && <span className="badge badge-teal" style={{ marginLeft: 4 }}>TD fleet</span>}</> },
           ]}
         />
+        {adding && (
+          <FormDrawer
+            title="Add vehicle to stock"
+            sub="Each physical vehicle is tracked by its VIN."
+            fields={[
+              { key: 'variantId', label: 'Model / variant', type: 'select', required: true, full: true, options: allVariants.map((x) => ({ value: x.id, label: x.name })) },
+              { key: 'vin', label: 'VIN (17 characters)', required: true },
+              { key: 'colour', label: 'Colour', required: true },
+              { key: 'year', label: 'Year', type: 'number', default: 2026 },
+              { key: 'source', label: 'Stock source', type: 'select', options: ['Factory allocation', 'Dealer transfer'], default: 'Factory allocation' },
+              { key: 'location', label: 'Location', type: 'select', options: ['Showroom Floor', 'Stockyard A', 'Stockyard B', 'Test Drive Fleet'], default: 'Stockyard A' },
+              { key: 'status', label: 'Status', type: 'select', options: ['Available', 'In Transit'], default: 'In Transit' },
+            ]}
+            submitLabel="Add vehicle"
+            onClose={() => setAdding(false)}
+            onSubmit={(f) => {
+              if (db.inventory.some((x) => x.vin === f.vin)) return setToast('A vehicle with this VIN already exists');
+              const vr = allVariants.find((x) => x.id === f.variantId);
+              const id = create('inventory', 'VEH', { vin: f.vin.toUpperCase(), model: vr.model, variant: vr.name, colour: f.colour, year: f.year, acquired: todayISO(), source: f.source, cost: Math.round(vr.price * 0.88), price: vr.price, location: f.location, status: f.status, testDrive: f.location === 'Test Drive Fleet' }, 'Added vehicle to stock');
+              setAdding(false);
+              setToast(`Vehicle ${id} added`);
+            }}
+          />
+        )}
+        <Toast msg={toast} onDone={() => setToast('')} />
         {v && (
           <Drawer title={`${v.model} ${v.variant}`} sub={`${v.id} · VIN ${v.vin}`} onClose={() => setSel(null)}>
             <div style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 16, background: '#0f1216' }}>

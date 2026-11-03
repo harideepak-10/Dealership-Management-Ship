@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { Menu, MessageCircle, X } from 'lucide-react';
+import { ChevronDown, Menu, MessageCircle, X } from 'lucide-react';
 import { Logo } from '../components/ui';
-import { brand } from '../config/brand';
-import { models } from '../data/models';
+import VehicleImage from '../components/VehicleImage';
+import { brand, formatLakh } from '../config/brand';
+import { families, models, startingPrice } from '../data/models';
 
 export default function SiteLayout() {
   const [open, setOpen] = useState(false);
+  const [mega, setMega] = useState(false);
+  const [fam, setFam] = useState(families[0]);
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
     setOpen(false);
+    setMega(false);
   }, [pathname]);
+  const famModels = models.filter((m) => m.family === fam);
 
   return (
     <div className="site">
@@ -24,16 +29,17 @@ export default function SiteLayout() {
             <Logo />
           </Link>
           <nav className={`site-nav ${open ? 'open' : ''}`}>
-            <NavLink to="/models">Models</NavLink>
-            <NavLink to="/compare">Compare</NavLink>
+            <button className={`nav-mega-btn ${mega ? 'on' : ''}`} onClick={() => setMega(!mega)} aria-expanded={mega}>
+              Models <ChevronDown size={14} />
+            </button>
+            <NavLink to="/electric">E-Performance</NavLink>
+            <NavLink to="/build">Build & Price</NavLink>
+            <NavLink to="/service">Service</NavLink>
+            <NavLink to="/finance">Finance</NavLink>
             <NavLink to="/offers">Offers</NavLink>
-            <NavLink to="/quote">Get a Quote</NavLink>
-            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/about">Dealership</NavLink>
           </nav>
           <div className="header-actions">
-            <Link to="/enquiry" className="btn btn-ghost btn-sm">
-              Enquire
-            </Link>
             <Link to="/test-drive" className="btn btn-primary btn-sm">
               Book a Test Drive
             </Link>
@@ -42,6 +48,33 @@ export default function SiteLayout() {
             </button>
           </div>
         </div>
+        {mega && (
+          <div className="mega" onMouseLeave={() => setMega(false)}>
+            <div className="wrap mega-inner">
+              <div className="mega-fams">
+                {families.map((f) => (
+                  <button key={f} className={f === fam ? 'on' : ''} onMouseEnter={() => setFam(f)} onClick={() => setFam(f)}>
+                    {f}
+                  </button>
+                ))}
+                <Link to="/models" className="mega-all">All models →</Link>
+                <Link to="/finder" className="mega-all">Help me choose →</Link>
+                <Link to="/compare" className="mega-all">Compare models →</Link>
+              </div>
+              <div className="mega-models">
+                {famModels.map((m) => (
+                  <Link key={m.slug} to={`/models/${m.slug}`} className="mega-card">
+                    <VehicleImage model={m} />
+                    <b>{brand.name} {m.name}</b>
+                    <small>
+                      {m.category} · from {formatLakh(startingPrice(m))}
+                    </small>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <main>
@@ -68,9 +101,14 @@ export default function SiteLayout() {
             <div>
               <h4>Shop</h4>
               <Link to="/test-drive">Book a test drive</Link>
+              <Link to="/finder">Help me choose</Link>
+              <Link to="/build">Build & price</Link>
               <Link to="/quote">Request a quotation</Link>
+              <Link to="/finance">Finance calculator</Link>
+              <Link to="/service">Book a service</Link>
               <Link to="/offers">Offers</Link>
-              <Link to="/enquiry">Service enquiry</Link>
+              <Link to="/compare">Compare models</Link>
+              <Link to="/contact">Contact</Link>
             </div>
             <div>
               <h4>Showroom</h4>

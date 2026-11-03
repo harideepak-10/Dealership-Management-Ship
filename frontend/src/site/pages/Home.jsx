@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CalendarCheck, FileText, MapPin, Phone, Wrench } from 'lucide-react';
+import { ArrowRight, CalendarCheck, FileText, MapPin, Phone, Sparkles, Wrench } from 'lucide-react';
 import VehicleImage from '../../components/VehicleImage';
 import ModelCard from '../ModelCard';
 import { brand, formatLakh } from '../../config/brand';
@@ -72,7 +72,7 @@ export default function Home() {
 
       <section className="section section-alt">
         <div className="wrap">
-          <div className="quick">
+          <div className="quick four">
             <Link to="/test-drive">
               <span className="ico">
                 <CalendarCheck size={22} />
@@ -87,12 +87,19 @@ export default function Home() {
               <h3>Request a quotation</h3>
               <p>Get an itemised on-road price for the exact variant and configuration you want.</p>
             </Link>
-            <Link to="/enquiry">
+            <Link to="/finder">
+              <span className="ico">
+                <Sparkles size={22} />
+              </span>
+              <h3>Help me choose</h3>
+              <p>Answer four quick questions and get the models that best fit how you drive.</p>
+            </Link>
+            <Link to="/service">
               <span className="ico">
                 <Wrench size={22} />
               </span>
-              <h3>Service & support</h3>
-              <p>Existing owner? Ask about servicing, warranty or anything else about your vehicle.</p>
+              <h3>Book a service</h3>
+              <p>Existing owner? Book your annual service, repairs or an EV battery check online.</p>
             </Link>
           </div>
         </div>

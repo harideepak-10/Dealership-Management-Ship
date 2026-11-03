@@ -2,13 +2,17 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Download, Plus } from 'lucide-react';
 import { Badge } from '../../components/ui';
+import { MessageHistory } from './Automation';
 import { formatINR } from '../../config/brand';
 import { salesExecs } from '../../data/seed';
 import { useDemo } from '../../store/DemoStore';
-import { DataTable, Drawer, Guard, PageHead, fmtDate } from '../kit';
+import { DataTable, Drawer, FormDrawer, Guard, PageHead, Toast, exportCSV, fmtDate } from '../kit';
+import { models } from '../../data/models';
 
 export default function Customers() {
-  const { db } = useDemo();
+  const { db, createCustomer } = useDemo();
+  const [adding, setAdding] = useState(false);
+  const [toast, setToast] = useState('');
   const [p] = useSearchParams();
   const [sel, setSel] = useState(null);
   const c = sel && db.customers.find((x) => x.id === sel);
@@ -20,10 +24,10 @@ export default function Customers() {
     <Guard module="customers">
       <div className="page">
         <PageHead title="Customers" sub="One profile per customer, shared across leads, test drives, quotations, bookings and service.">
-          <button className="abtn">
+          <button className="abtn" onClick={() => exportCSV('customers.csv', db.customers)}>
             <Download size={15} /> Export
           </button>
-          <button className="abtn abtn-primary">
+          <button className="abtn abtn-primary" onClick={() => setAdding(true)}>
             <Plus size={15} /> New customer
           </button>
         </PageHead>
@@ -56,6 +60,31 @@ export default function Customers() {
           ]}
         />
         {c && <CustomerDrawer c={c} onClose={() => setSel(null)} />}
+        {adding && (
+          <FormDrawer
+            title="New customer"
+            sub="Duplicates are detected by mobile number and email."
+            fields={[
+              { key: 'name', label: 'Full name', required: true },
+              { key: 'mobile', label: 'Mobile', required: true },
+              { key: 'email', label: 'Email', type: 'email' },
+              { key: 'address', label: 'Address', full: true },
+              { key: 'contactPref', label: 'Preferred contact', type: 'select', options: ['Phone', 'WhatsApp', 'Email'], default: 'Phone' },
+              { key: 'model', label: 'Interested model', type: 'select', options: models.map((m) => m.name) },
+              { key: 'budget', label: 'Budget', type: 'select', options: ['₹1–1.5 Cr', '₹1.5–2 Cr', '₹2–2.5 Cr', '₹2.5–3 Cr', '₹3 Cr+'] },
+              { key: 'timeline', label: 'Purchase timeline', type: 'select', options: ['Immediate', 'Within 1 month', '1–3 months', '3+ months'] },
+              { key: 'owner', label: 'Assign to', type: 'select', options: salesExecs.map((e) => e.name) },
+            ]}
+            submitLabel="Create customer"
+            onClose={() => setAdding(false)}
+            onSubmit={(f) => {
+              const r = createCustomer(f);
+              setAdding(false);
+              setToast(r.existing ? `Matched existing customer ${r.id} — no duplicate created` : `Customer ${r.id} created`);
+            }}
+          />
+        )}
+        <Toast msg={toast} onDone={() => setToast('')} />
       </div>
     </Guard>
   );
@@ -101,6 +130,8 @@ function CustomerDrawer({ c, onClose }) {
       <Row items={qts} render={(x) => <><span>{x.id} · {x.variant} · {formatINR(x.total)}</span><Badge>{x.status}</Badge></>} />
       <div className="section-title">Bookings ({bks.length})</div>
       <Row items={bks} render={(x) => <><span>{x.id} · {x.variant}</span><Badge>{x.status}</Badge></>} />
+      <div className="section-title">Communication history</div>
+      <MessageHistory customerId={c.id} />
       <div className="section-title">Service ({svc.length})</div>
       <Row items={svc} render={(x) => <><span>{x.id} · {x.type}</span><Badge>{x.status}</Badge></>} />
     </Drawer>

@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Badge } from '../../components/ui';
+import { scoreLabel, scoreLead } from '../../store/automation';
+import { MessageHistory } from './Automation';
 import { leadSources, leadStatuses, salesExecs } from '../../data/seed';
 import { models } from '../../data/models';
 import { useDemo } from '../../store/DemoStore';
-import { DataTable, Drawer, Guard, PageHead, fmtDate, todayISO } from '../kit';
+import { DataTable, Drawer, FormDrawer, Guard, PageHead, Toast, exportCSV, fmtDate, todayISO } from '../kit';
 
 const closed = ['Converted', 'Lost', 'Not Interested'];
 
 export default function Leads() {
-  const { db } = useDemo();
+  const { db, createLead } = useDemo();
   const [tab, setTab] = useState('list');
+  const [adding, setAdding] = useState(false);
+  const [toast, setToast] = useState('');
   const [sel, setSel] = useState(null);
   const today = todayISO();
   const lead = sel && db.leads.find((l) => l.id === sel);
@@ -27,7 +31,8 @@ export default function Leads() {
               Pipeline
             </button>
           </div>
-          <button className="abtn abtn-primary" title="Opens the new-lead form (walk-in / phone / WhatsApp / referral) in the full build">
+          <button className="abtn" onClick={() => exportCSV('leads.csv', db.leads)}>Export</button>
+          <button className="abtn abtn-primary" onClick={() => setAdding(true)}>
             <Plus size={15} /> New lead
           </button>
         </PageHead>
@@ -49,6 +54,7 @@ export default function Leads() {
               { label: 'Interest', render: (r) => `${r.model} · ${r.variant}` },
               { label: 'Source', key: 'source', cls: 'muted' },
               { label: 'Owner', render: (r) => r.owner || <span className="overdue">Unassigned</span> },
+              { label: 'Score', render: (r) => { const s = r.score ?? scoreLead(r); return <span title={`Lead score ${s}/100`}><Badge>{scoreLabel(s)}</Badge> <span className="muted" style={{ fontSize: 12 }}>{s}</span></span>; } },
               { label: 'Priority', render: (r) => <Badge>{r.priority}</Badge> },
               { label: 'Status', render: (r) => <Badge>{r.status}</Badge> },
               {
@@ -86,6 +92,31 @@ export default function Leads() {
         )}
 
         {lead && <LeadDrawer lead={lead} onClose={() => setSel(null)} />}
+        {adding && (
+          <FormDrawer
+            title="New lead"
+            sub="Walk-in, phone, WhatsApp or referral. Existing customers are matched by mobile / email."
+            fields={[
+              { key: 'name', label: 'Customer name', required: true },
+              { key: 'mobile', label: 'Mobile', required: true },
+              { key: 'email', label: 'Email', type: 'email' },
+              { key: 'source', label: 'Lead source', type: 'select', options: leadSources, required: true, default: 'Walk-in' },
+              { key: 'model', label: 'Interested model', type: 'select', options: models.map((m) => m.name), required: true },
+              { key: 'owner', label: 'Assign to', type: 'select', options: salesExecs.map((e) => e.name) },
+              { key: 'priority', label: 'Priority', type: 'select', options: ['High', 'Medium', 'Low'], default: 'Medium' },
+              { key: 'budget', label: 'Budget', type: 'select', options: ['₹1–1.5 Cr', '₹1.5–2 Cr', '₹2–2.5 Cr', '₹2.5–3 Cr', '₹3 Cr+'] },
+              { key: 'message', label: 'Notes', type: 'textarea', full: true },
+            ]}
+            submitLabel="Create lead"
+            onClose={() => setAdding(false)}
+            onSubmit={(f) => {
+              const id = createLead(f);
+              setAdding(false);
+              setToast(`Lead ${id} created`);
+            }}
+          />
+        )}
+        <Toast msg={toast} onDone={() => setToast('')} />
       </div>
     </Guard>
   );
@@ -193,6 +224,8 @@ function LeadDrawer({ lead, onClose }) {
         </button>
       </div>
 
+      <div className="section-title">Messages sent</div>
+      <MessageHistory customerId={lead.customerId} />
       <div className="section-title">History</div>
       <div className="timeline">
         {history.map((h, i) => (

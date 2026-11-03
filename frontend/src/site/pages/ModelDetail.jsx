@@ -80,6 +80,9 @@ export default function ModelDetail() {
                   </Link>
                 </div>
                 <div style={{ marginTop: 14, display: 'flex', gap: 18, fontSize: 14 }}>
+                  <Link to={`/build/${model.slug}`} className="btn-link">
+                    Build & price
+                  </Link>
                   <Link to={`/enquiry${qs}`} className="btn-link">
                     Submit an enquiry
                   </Link>

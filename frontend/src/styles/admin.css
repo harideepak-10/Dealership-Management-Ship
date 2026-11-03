@@ -816,3 +816,31 @@
   .kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
   .kpi .value { font-size: 22px; }
 }
+
+.toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #15181d; color: #fff; padding: 11px 18px; border-radius: 10px; font-size: 13.5px; z-index: 90; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+
+/* Printable quotation / receipt */
+.print-page { --a-primary: #1f2a37; --a-line: #e6e8ec; --a-muted: #6a7280; --a-card: #fff; --a-text: #15181d; max-width: 760px; margin: 0 auto; padding: 40px 32px; background: #fff; color: #15181d; min-height: 100vh; }
+.print-head { display: flex; justify-content: space-between; gap: 20px; border-bottom: 2px solid #15181d; padding-bottom: 18px; margin-bottom: 22px; }
+.print-head small { color: #6a7280; }
+.print-head h2 { font-size: 22px; }
+.print-logo { font-family: var(--font-display); letter-spacing: 0.42em; font-weight: 600; font-size: 20px; margin-bottom: 6px; }
+.print-to { margin-bottom: 20px; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+.print-to small { color: #6a7280; text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; }
+.print-foot { font-size: 12px; color: #6a7280; margin-top: 24px; }
+@media print { .no-print { display: none !important; } body { background: #fff; } .print-page { padding: 0; } }
+body:has(.print-page) { background: #fff; }
+
+/* Automations */
+.rule { display: flex; gap: 16px; align-items: center; padding: 12px 0; border-top: 1px solid #f0f1f4; }
+.rule:first-of-type { border-top: 0; }
+.rule p { color: var(--a-muted); font-size: 13px; margin-top: 3px; }
+.rule .badge { margin-left: 6px; font-size: 11px; }
+.rule-count { font-size: 12px; color: var(--a-muted); white-space: nowrap; }
+.switch { width: 40px; height: 22px; border-radius: 999px; border: 0; background: #d5d8de; position: relative; flex-shrink: 0; transition: background 0.15s; }
+.switch span { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+.switch.on { background: #1d7a3a; }
+.switch.on span { left: 21px; }
+.briefing { margin-bottom: 18px; border-left: 3px solid #c8102e; }
+.briefing ul { margin: 0; padding-left: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; font-size: 13.5px; }
+@media (max-width: 860px) { .briefing ul { grid-template-columns: 1fr; } }

@@ -17,7 +17,7 @@ const tone = {
   Approved: 'teal', Sent: 'violet', Viewed: 'violet', Reserved: 'amber', Allocated: 'violet', 'In Transit': 'blue',
   'Vehicle Awaited': 'amber', 'Vehicle Allocated': 'violet', 'Documentation Pending': 'amber', 'Ready for Delivery': 'teal',
   'Vehicle Received': 'violet', Inspection: 'violet', 'Job Card Created': 'violet', 'Quality Check': 'amber', 'Payment Pending': 'amber',
-  Active: 'teal', High: 'red', Medium: 'amber', Low: 'grey',
+  Active: 'teal', Hot: 'red', Warm: 'amber', Cold: 'grey', High: 'red', Medium: 'amber', Low: 'grey',
   // done
   Converted: 'green', Completed: 'green', Accepted: 'green', Available: 'green', Sold: 'grey', Delivered: 'green', Customer: 'green',
   'Vehicle Delivered': 'green',

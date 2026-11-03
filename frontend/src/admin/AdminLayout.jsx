@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   BarChart3, Bell, Car, CalendarDays, ClipboardList, CreditCard, FileText, Gauge, LogOut, Menu, RotateCcw, Search,
-  Settings, ShieldCheck, Truck, UserCog, Users, Wrench, ListChecks, Target,
+  Settings, ShieldCheck, Truck, UserCog, Users, Wrench, ListChecks, Target, CarFront, MessageSquare, Zap,
 } from 'lucide-react';
 import { Logo } from '../components/ui';
 import { brand } from '../config/brand';
@@ -17,7 +17,7 @@ const nav = [
       { to: '/admin/customers', key: 'customers', label: 'Customers', icon: Users },
       { to: '/admin/test-drives', key: 'testdrives', label: 'Test Drives', icon: CalendarDays, badge: 'testDrives' },
       { to: '/admin/quotations', key: 'quotations', label: 'Quotations', icon: FileText },
-      { to: '/admin/bookings', key: 'bookings', label: 'Bookings & Delivery', icon: ClipboardList },
+      { to: '/admin/bookings', key: 'bookings', label: 'Bookings', icon: ClipboardList },
     ],
   },
   {
@@ -27,16 +27,20 @@ const nav = [
       { to: '/admin/payments', key: 'payments', label: 'Payments', icon: CreditCard },
       { to: '/admin/deliveries', key: 'bookings', label: 'Deliveries', icon: Truck },
       { to: '/admin/service', key: 'service', label: 'Service & Job Cards', icon: Wrench },
+      { to: '/admin/customer-vehicles', key: 'service', label: 'Customer Vehicles', icon: CarFront },
     ],
   },
   {
     group: 'Admin',
     items: [
-      { to: '/admin/tasks', key: 'overview', label: 'Tasks', icon: ListChecks },
+      { to: '/admin/tasks', key: 'tasks', label: 'Tasks', icon: ListChecks, badge: 'tasks' },
+      { to: '/admin/notifications', key: 'overview', label: 'Notifications', icon: Bell },
+      { to: '/admin/communications', key: 'leads', label: 'Communications', icon: MessageSquare },
+      { to: '/admin/automations', key: 'automations', label: 'Automations', icon: Zap },
       { to: '/admin/reports', key: 'reports', label: 'Reports', icon: BarChart3 },
       { to: '/admin/employees', key: 'employees', label: 'Employees & Roles', icon: UserCog },
       { to: '/admin/audit', key: 'employees', label: 'Audit Logs', icon: ShieldCheck },
-      { to: '/admin/settings', key: 'employees', label: 'Settings', icon: Settings },
+      { to: '/admin/settings', key: 'settings', label: 'Settings', icon: Settings },
     ],
   },
 ];
@@ -58,6 +62,7 @@ export default function AdminLayout() {
   const badges = {
     leads: db.leads.filter((l) => l.status === 'New').length,
     testDrives: db.testDrives.filter((t) => t.status === 'Requested').length,
+    tasks: db.tasks.filter((t) => t.status !== 'Completed' && t.owner === user.name).length,
   };
   const unread = db.notifications.filter((n) => !n.read).length;
   const initials = user.name.split(' ').map((x) => x[0]).join('').slice(0, 2);
@@ -119,6 +124,7 @@ export default function AdminLayout() {
                     Mark all read
                   </button>
                 </div>
+                <Link to="/admin/notifications" style={{ display: 'block', fontSize: 12, padding: '4px 10px 8px', color: '#c8102e' }}>View all notifications →</Link>
                 {db.notifications.slice(0, 6).map((n) => (
                   <div key={n.id} className={`n ${n.read ? '' : 'unread'}`}>
                     <Bell size={14} style={{ marginTop: 2, flexShrink: 0 }} />

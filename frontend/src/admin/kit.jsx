@@ -1,5 +1,5 @@
 // Small shared building blocks for dashboard pages.
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Lock, X } from 'lucide-react';
 import { useDemo } from '../store/DemoStore';
 
@@ -152,4 +152,78 @@ export function Guard({ module, children }) {
       </div>
     </div>
   );
+}
+
+// Download rows as a CSV file (used by "Export" buttons)
+export function exportCSV(filename, rows, cols) {
+  const keys = cols || Object.keys(rows[0] || {}).filter((k) => k !== 'fresh');
+  const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const csv = [keys.join(','), ...rows.map((r) => keys.map((k) => esc(Array.isArray(r[k]) ? r[k].join('; ') : r[k])).join(','))].join('\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Simple form drawer: fields = [{ key, label, type, options, required, full }]
+export function FormDrawer({ title, sub, fields, initial = {}, submitLabel = 'Save', onSubmit, onClose, note }) {
+  const [form, setForm] = useState(() => Object.fromEntries(fields.map((f) => [f.key, initial[f.key] ?? f.default ?? ''])));
+  const [err, setErr] = useState({});
+  const submit = (e) => {
+    e.preventDefault();
+    const errs = {};
+    fields.forEach((f) => {
+      const v = form[f.key];
+      if (f.required && (v === '' || v == null)) errs[f.key] = 'Required';
+      if (f.key === 'mobile' && v && !/^[6-9]\d{9}$/.test(String(v))) errs[f.key] = '10-digit mobile';
+    });
+    setErr(errs);
+    if (Object.keys(errs).length) return;
+    onSubmit(form);
+  };
+  return (
+    <Drawer title={title} sub={sub} onClose={onClose}>
+      {note && <div className="alert alert-info">{note}</div>}
+      <form onSubmit={submit} noValidate>
+        <div className="form-row">
+          {fields.map((f) => (
+            <div key={f.key} style={f.full ? { gridColumn: '1 / -1' } : undefined}>
+              <label>
+                {f.label}
+                {f.required && ' *'}
+              </label>
+              {f.type === 'select' ? (
+                <select className="aselect" value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}>
+                  <option value="">Select…</option>
+                  {f.options.map((o) => (typeof o === 'string' ? <option key={o}>{o}</option> : <option key={o.value} value={o.value}>{o.label}</option>))}
+                </select>
+              ) : f.type === 'textarea' ? (
+                <textarea className="ainput" style={{ width: '100%', height: 70, padding: 10 }} value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} />
+              ) : (
+                <input className="ainput" type={f.type || 'text'} value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: f.type === 'number' ? Number(e.target.value) : e.target.value })} />
+              )}
+              {err[f.key] && <div style={{ color: '#b3261e', fontSize: 12, marginTop: 3 }}>{err[f.key]}</div>}
+            </div>
+          ))}
+        </div>
+        <div className="actions">
+          <button className="abtn abtn-primary">{submitLabel}</button>
+          <button type="button" className="abtn" onClick={onClose}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </Drawer>
+  );
+}
+
+export function Toast({ msg, onDone }) {
+  useEffect(() => {
+    if (!msg) return;
+    const t = setTimeout(onDone, 3200);
+    return () => clearTimeout(t);
+  }, [msg, onDone]);
+  return msg ? <div className="toast">{msg}</div> : null;
 }

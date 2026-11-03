@@ -6,6 +6,8 @@ import { monthlySales, recentActivity, salesExecs } from '../../data/seed';
 import { models } from '../../data/models';
 import { useDemo } from '../../store/DemoStore';
 import { Kpi, PageHead, fmtDate, todayISO } from '../kit';
+import { buildDigest } from '../../store/automation';
+import { Zap } from 'lucide-react';
 
 const palette = ['#1f2a37', '#c8102e', '#4d7cbf', '#2f8f83', '#9b6bc9', '#d07a4a', '#8a94a3'];
 
@@ -59,6 +61,16 @@ export default function Overview() {
           Review test drive requests ({k.tdRequested})
         </Link>
       </PageHead>
+
+      <div className="card briefing">
+        <div className="card-head">
+          <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Zap size={15} style={{ color: '#c8102e' }} /> Today's briefing</h3>
+          <Link to="/admin/automations" style={{ fontSize: 12, color: '#c8102e' }}>{(db.autoLog || []).length} automated actions · view →</Link>
+        </div>
+        <ul>
+          {buildDigest(db).map((line) => (<li key={line}>{line}</li>))}
+        </ul>
+      </div>
 
       <div className="kpis">
         <Kpi icon={Users} label="Total customers" value={k.customers} sub="All records in CRM" />

@@ -86,10 +86,10 @@ export const seedLeads = seedCustomers.slice(0, 32).map((c, i) => {
 
 // Inventory: individual physical vehicles (VIN-level)
 const locations = ['Showroom Floor', 'Stockyard A', 'Stockyard B', 'Test Drive Fleet'];
-export const seedInventory = Array.from({ length: 30 }, (_, i) => {
+export const seedInventory = Array.from({ length: 38 }, (_, i) => {
   const v = allVariants[i % allVariants.length];
   const m = models.find((x) => x.slug === v.slug);
-  const isFleet = [0, 4, 7, 9, 12].includes(i); // one test-drive car per model
+  const isFleet = [0, 4, 7, 9, 17].includes(i); // one test-drive car per model
   return {
     id: `VEH-${pad(5001 + i)}`,
     vin: `MA1SL${String.fromCharCode(65 + (i % 26))}${pad(Math.floor(rnd() * 99999999), 8)}${pad(i, 4)}`,
@@ -223,4 +223,41 @@ export const recentActivity = [
   { who: 'Meena Kumari', what: 'recorded ₹25,00,000 payment on BK-6103', when: '2 hr ago' },
   { who: 'Rahul Krishnan', what: 'created job card JC-8102', when: '3 hr ago' },
   { who: 'Sanjay Pillai', what: 'added 4 vehicles to Stockyard A', when: 'Yesterday' },
+];
+
+// Payments recorded against bookings
+export const seedPayments = seedBookings.flatMap((b, i) => {
+  const rows = [{ id: `PAY-${pad(9101 + i * 2)}`, bookingId: b.id, customer: b.customer, date: dayOffset(-20 - i), amount: b.bookingAmount, method: 'UPI', ref: `UTR${pad(48200000 + i * 7919, 8)}`, type: 'Booking advance', verified: true }];
+  if (b.paid > b.bookingAmount)
+    rows.push({ id: `PAY-${pad(9102 + i * 2)}`, bookingId: b.id, customer: b.customer, date: dayOffset(-6 - i), amount: b.paid - b.bookingAmount, method: 'Bank transfer', ref: `NEFT${pad(99310000 + i * 1931, 8)}`, type: 'Part payment', verified: i % 3 !== 0 });
+  return rows;
+});
+
+// Vehicles owned by customers (delivered cars), linked to service records
+export const seedCustomerVehicles = seedServices.map((s, i) => ({
+  id: `CV-${pad(1201 + i)}`,
+  customerId: s.customerId,
+  customer: s.customer,
+  model: s.vehicle.split(' · ')[0],
+  registration: s.vehicle.split(' · ')[1],
+  vin: `WP0ZZZ${pad(Math.floor(rnd() * 99999999), 8)}${pad(i, 3)}`,
+  purchased: dayOffset(-200 - Math.floor(rnd() * 700)),
+  warrantyTill: dayOffset(300 + Math.floor(rnd() * 600) - 400),
+  lastService: s.date,
+}));
+
+export const seedTasks = [
+  { id: 'TSK-501', title: 'Call back about Taycan finance options', linkedTo: 'LD-2203', owner: 'Arjun Mehta', due: dayOffset(0), priority: 'High', status: 'Pending' },
+  { id: 'TSK-502', title: 'Send revised quotation with accessories', linkedTo: 'QT-4104', owner: 'Priya Raman', due: dayOffset(1), priority: 'Medium', status: 'In Progress' },
+  { id: 'TSK-503', title: 'Collect KYC documents', linkedTo: 'BK-6102', owner: 'Karthik Subramani', due: dayOffset(-2), priority: 'High', status: 'Pending' },
+  { id: 'TSK-504', title: 'Post test drive follow-up', linkedTo: 'TD-3105', owner: 'Arjun Mehta', due: dayOffset(-1), priority: 'Medium', status: 'Pending' },
+  { id: 'TSK-505', title: 'Confirm delivery slot with customer', linkedTo: 'BK-6104', owner: 'Priya Raman', due: dayOffset(2), priority: 'Low', status: 'Pending' },
+  { id: 'TSK-506', title: 'Schedule annual service reminder calls', linkedTo: '—', owner: 'Rahul Krishnan', due: dayOffset(3), priority: 'Low', status: 'Completed' },
+];
+
+export const seedAudit = [
+  { id: 1, when: dayOffset(-1) + ' 17:42', who: 'Divya Nair', action: 'Approved discount', record: 'QT-4104' },
+  { id: 2, when: dayOffset(-1) + ' 15:10', who: 'Meena Kumari', action: 'Recorded payment ₹25,00,000', record: 'BK-6103' },
+  { id: 3, when: dayOffset(-1) + ' 12:05', who: 'Sanjay Pillai', action: 'Changed vehicle status Available → Reserved', record: 'VEH-5008' },
+  { id: 4, when: dayOffset(-2) + ' 11:30', who: 'Arjun Mehta', action: 'Confirmed test drive', record: 'TD-3104' },
 ];

@@ -155,6 +155,16 @@ function TDDrawer({ td, onClose }) {
   const [msg, setMsg] = useState(null);
 
   const conflict = vehicleId || exec ? testDriveConflict({ ...td, date, slot }, vehicleId, exec) : null;
+  // Auto-suggest: first fleet car of the requested model, then the executive with fewest drives that day, both free in this slot
+  const suggest = () => {
+    const cars = [...fleet.filter((v) => v.model === td.model), ...fleet.filter((v) => v.model !== td.model)];
+    const car = cars.find((v) => !testDriveConflict({ ...td, date, slot }, v.id, null));
+    const load = (n) => db.testDrives.filter((x) => x.executive === n && x.date === date).length;
+    const ex = [...salesExecs].sort((a, b) => load(a.name) - load(b.name)).find((e) => !testDriveConflict({ ...td, date, slot }, null, e.name));
+    if (car) setVehicleId(car.id);
+    if (ex) setExec(ex.name);
+    setMsg(car && ex ? `Suggested ${car.variant} (${car.id}) and ${ex.name} — both free at ${slot}. Review and approve.` : 'No free vehicle/executive in this slot — try another time.');
+  };
   const canConfirm = vehicleId && exec && !conflict;
   const save = (patch, text) => {
     update('testDrives', td.id, patch);
@@ -209,9 +219,12 @@ function TDDrawer({ td, onClose }) {
         </div>
       )}
 
+      {['Requested', 'Confirmed', 'Assigned'].includes(td.status) && (
+        <button className="abtn abtn-xs" style={{ marginBottom: 6 }} onClick={suggest}>⚙ Auto-suggest vehicle & executive</button>
+      )}
       {td.status === 'Requested' && (
         <div className="actions">
-          <button className="abtn abtn-ok" disabled={!canConfirm} onClick={() => save({ status: 'Confirmed', vehicleId, executive: exec, date, slot }, 'Confirmed. Customer notified by SMS and WhatsApp (simulated).')}>
+          <button className="abtn abtn-ok" disabled={!canConfirm} onClick={() => save({ status: 'Confirmed', vehicleId, executive: exec, date, slot }, 'Confirmed. Confirmation message sent and lead moved to Test Drive Scheduled.')}>
             Approve & confirm
           </button>
           <button className="abtn abtn-danger" onClick={() => save({ status: 'Rejected' }, 'Request rejected. Customer notified (simulated).')}>
@@ -240,7 +253,7 @@ function TDDrawer({ td, onClose }) {
           <div className="section-title">Feedback & next step</div>
           <textarea className="ainput" style={{ width: '100%', height: 70, padding: 10 }} value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="How did it go? What's the next step?" />
           <div className="actions">
-            <button className="abtn abtn-ok" onClick={() => save({ status: 'Completed', feedback }, 'Completed. Follow-up task created for the executive (simulated).')}>
+            <button className="abtn abtn-ok" onClick={() => save({ status: 'Completed', feedback }, 'Completed. Thank-you message sent and follow-up task created for tomorrow.')}>
               {td.status === 'Completed' ? 'Update feedback' : 'Complete test drive'}
             </button>
           </div>
