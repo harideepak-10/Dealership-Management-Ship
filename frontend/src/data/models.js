@@ -310,7 +310,6 @@ export const interiorImage = img('1563156454-0be991636c70');
 export const getModel = (slug) => models.find((m) => m.slug === slug);
 export const startingPrice = (m) => Math.min(...m.variants.map((v) => v.price));
 export const allVariants = models.flatMap((m) => m.variants.map((v) => ({ ...v, model: m.name, slug: m.slug })));
-export const variantById = (id) => allVariants.find((v) => v.id === id);
 
 export const offers = [
   {

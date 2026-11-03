@@ -111,19 +111,6 @@
 }
 
 /* Hero */
-.hero {
-  position: relative;
-  overflow: hidden;
-  padding: 72px 0 40px;
-  background: radial-gradient(1200px 500px at 70% 30%, #1f2630 0%, transparent 60%),
-    radial-gradient(600px 300px at 15% 80%, rgba(200, 16, 46, 0.12), transparent 70%);
-}
-.hero .wrap {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 32px;
-  align-items: center;
-}
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.22em;
@@ -131,25 +118,11 @@
   color: var(--accent);
   font-weight: 600;
 }
-.hero h1 {
-  font-size: clamp(38px, 5.4vw, 64px);
-  font-weight: 600;
-  margin: 14px 0 18px;
-}
-.hero p.lead {
-  color: var(--muted);
-  font-size: 17px;
-  max-width: 460px;
-}
 .hero-cta {
   display: flex;
   gap: 12px;
   margin-top: 30px;
   flex-wrap: wrap;
-}
-.hero-car {
-  width: 100%;
-  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.5));
 }
 .hero-stats {
   display: flex;
@@ -255,9 +228,6 @@
 .model-card:hover {
   border-color: #3d444f;
   transform: translateY(-2px);
-}
-.model-card .car {
-  margin: 6px -6px 4px;
 }
 .model-card h3 {
   font-size: 22px;
@@ -457,22 +427,6 @@
 .detail-grid .lead {
   color: var(--muted);
   margin: 14px 0 22px;
-}
-.view-toggle {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  margin-top: 14px;
-}
-.interior {
-  aspect-ratio: 400 / 160;
-  border-radius: var(--radius);
-  background: radial-gradient(circle at 30% 60%, #3a2f22, #14110d 70%);
-  display: grid;
-  place-items: center;
-  color: var(--muted);
-  font-size: 13px;
-  border: 1px solid var(--line);
 }
 .panel {
   background: var(--bg-2);
@@ -918,7 +872,6 @@
 
 /* Responsive */
 @media (max-width: 960px) {
-  .hero .wrap,
   .detail-grid,
   .form-layout,
   .contact-grid,

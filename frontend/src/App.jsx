@@ -26,7 +26,6 @@ import { Automations, Communications } from './admin/pages/Automation';
 import { Audit, CustomerVehicles, Employees, Notifications, Payments, ReceiptPrint, Reports, Settings, Tasks } from './admin/pages/Modules';
 import Bookings from './admin/pages/Bookings';
 import Service from './admin/pages/Service';
-import Upcoming from './admin/pages/Upcoming';
 
 export default function App() {
   return (
@@ -76,7 +75,7 @@ export default function App() {
         <Route path="notifications" element={<Notifications />} />
         <Route path="automations" element={<Automations />} />
         <Route path="communications" element={<Communications />} />
-        <Route path=":module" element={<Upcoming />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
